@@ -7,6 +7,8 @@ puts "Destroying all recipes..."
 
 Recipe.destroy_all
 
+puts "Creating recipes..."
+
 filepath = File.join(Rails.root, "db", "","recipes.json")
 
 if File.exist?(filepath)
