@@ -1,0 +1,5 @@
+development:
+  adapter: enhanced_postgresql
+
+production:
+  adapter: enhanced_postgresql
