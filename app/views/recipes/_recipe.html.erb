@@ -1,0 +1,21 @@
+<div id="<%= dom_id recipe %>">
+  <p>
+    <strong>Name:</strong>
+    <%= recipe.name %>
+  </p>
+
+  <p>
+    <strong>Ingredients:</strong>
+    <ul>
+      <% JSON.parse(recipe.ingredients).each do |ingredient| %>
+        <li><%= ingredient %></li>
+      <% end %>
+    </ul>
+  </p>
+
+  <p>
+    <strong>Instructions:</strong>
+    <%= recipe.instructions %>
+  </p>
+
+</div>

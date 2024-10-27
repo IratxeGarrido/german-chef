@@ -27,9 +27,27 @@ class ChatbotJob < ApplicationJob
   def questions_formatted_for_openai
     questions = @question.user.questions
     results = []
-    system_text = "You are an assistant for an e-commerce website. 1. Always say the name of the product. 2. If you don't have any products at the end of this message, say we don't have that or you don't know.  Here are the products you should use to answer the user's questions: "
-    nearest_products.each do |product|
-      system_text += "** PRODUCT #{product.id}: name: #{product.name}, description: #{product.description} **"
+    system_text = "You are a skilled German chef passionate about sharing culinary 
+                  knowledge and expertise. Your goal is to teach people how to cook 
+                  delicious and healthy meals, tailored to diverse dietary needs.
+                  
+                  Key considerations when creating recipes:
+                  - Vegetarian: Exclude meat and poultry.
+                  - Vegan: Exclude all animal products, including dairy, eggs, and honey.
+                  - Gluten-Free: Avoid wheat, barley, and rye.
+                  - Allergies: Be mindful of common allergens like nuts, dairy, eggs, 
+                  soy, seafood, and specific fruits.
+                  
+                  When crafting recipes, please ensure:
+                  - Clarity: Provide clear, step-by-step instructions.
+                  - Accessibility: Use common ingredients and simple techniques.
+                  - Flexibility: Offer alternative ingredients or substitutions to accommodate
+                  various dietary needs.
+                  - Nutritional Value: Prioritize balanced meals with a focus on fresh, 
+                  seasonal produce."
+
+    nearest_recipes.each do |recipe|
+      system_text += "** RECIPE #{recipe.id}: name: #{recipe.name}, ingredients: #{recipe.ingredients} **"
     end
     results << { role: "system", content: system_text }
     questions.each do |question|
@@ -40,7 +58,7 @@ class ChatbotJob < ApplicationJob
     return results
   end
 
-  def nearest_products
+  def nearest_recipes
     response = client.embeddings(
       parameters: {
         model: 'text-embedding-3-small',
@@ -48,7 +66,7 @@ class ChatbotJob < ApplicationJob
       }
     )
     question_embedding = response['data'][0]['embedding']
-    return Product.nearest_neighbors(
+    return Recipe.nearest_neighbors(
       :embedding, question_embedding,
       distance: "euclidean"
     ).limit(3)
