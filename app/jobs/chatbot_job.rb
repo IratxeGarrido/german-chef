@@ -9,7 +9,7 @@ class ChatbotJob < ApplicationJob
         messages: questions_formatted_for_openai
       }
     )
-    new_content = chaptgpt_response["choices"][0]["message"]["content"]
+    new_content = chaptgpt_response["choices"][0]["message"]["content"].gsub("\n", "<br>")
 
     question.update(ai_answer: new_content)
     Turbo::StreamsChannel.broadcast_update_to(
@@ -47,7 +47,7 @@ class ChatbotJob < ApplicationJob
                   seasonal produce."
 
     nearest_recipes.each do |recipe|
-      system_text += "** RECIPE #{recipe.id}: name: #{recipe.name}, ingredients: #{recipe.ingredients} **"
+      system_text += "RECIPE #{recipe.id}: name: #{recipe.name}, ingredients: #{recipe.ingredients}"
     end
     results << { role: "system", content: system_text }
     questions.each do |question|
@@ -69,6 +69,6 @@ class ChatbotJob < ApplicationJob
     return Recipe.nearest_neighbors(
       :embedding, question_embedding,
       distance: "euclidean"
-    ).limit(3)
+    ).limit(2)
   end
 end

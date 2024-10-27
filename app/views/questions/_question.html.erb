@@ -2,5 +2,5 @@
   <%= turbo_stream_from dom_id(question) %>
 
   <p class="user-question"><%= question.user_question %></p>
-  <p class="ai-answer"><%= question.ai_answer || "..." %></p>
+  <p class="ai-answer"><%= question.ai_answer ? question.ai_answer.html_safe : "..." %></p>
 </div>
